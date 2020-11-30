@@ -1,4 +1,8 @@
 import React from 'react';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
+import Login from './Login';
+import Register from './Register';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -9,6 +13,7 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import { CurrentUserContext } from '../contexts/currentUserContext';
 import api from '../utils/api.js';
+import * as auth from '../utils/auth.js';
 import { renderError } from '../utils/utils.js';
 
 function App() {
@@ -22,6 +27,13 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({});
 
   const [cards, setCards] = React.useState([]);
+
+  // --> авторизация
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [email, setEmail] = React.useState('');
+
+  const history = useHistory();
+  // <-- авторизация
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -95,6 +107,7 @@ function App() {
       });
   }
 
+
   function handleAddPlaceSubmit({ name, link }) {
     api.addNewCard({ name, link }).then((newCard) => {
 
@@ -118,6 +131,54 @@ function App() {
     setSelectedCard({});
   }
 
+  // --> авторизация
+  const handleResponce = (res) => {
+    if (res.jwt) {
+      localStorage.setItem('jwt', res.jwt);
+      setEmail(res.data.email);
+      setLoggedIn(true);
+    }
+  }
+
+  const onLogin = (username, password) => {
+    // авторизация
+    console.log('onLogin from App component: ', email, password);
+    auth.authorize(username, password)
+      .then(handleResponce)
+      .catch(err => console.log("Ошибка: ", err));
+  }
+
+  const onRegister = (password, email) => {
+    console.log('handleRegister from App component: ', password, email);
+    auth.register(password, email)
+      .then(handleResponce)
+      .catch(err => console.log(err));
+  }
+
+
+  const tokenCheck = () => {
+
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth.getContent(jwt).then((res) => {
+        console.log('tokenCheck.res: ', res);
+        if (res.data.email) {
+          setEmail(res.data.email);
+          setLoggedIn(true);
+        }
+      }).catch(err => console.log(err));
+    }
+  }
+
+  const onSignOut = () => {
+    // авторизация
+    console.log('onSignOut from App component');
+    localStorage.removeItem('jwt');
+    setEmail('');
+    setLoggedIn(false);
+  }
+  // <-- авторизация
+
   React.useEffect(() => {
     api.getUserInfo().then((initialUserInfo) => {
 
@@ -135,60 +196,93 @@ function App() {
       .catch((err) => console.error(err));
   }, []);
 
+  // --> авторизация
+  React.useEffect(_ => {
+    tokenCheck()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  React.useEffect(_ => {
+    if (loggedIn) {
+      history.push('/');
+    }
+  }, [loggedIn]);
+  // <-- авторизация
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <div className='page'>
-        <div className='page__container'>
-          <Header />
-          <Main
-            cards={cards}
-            onEditAvatar={handleEditAvatarClick}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
-          />
+    <>
+      <CurrentUserContext.Provider value={currentUser}>
+        <div className='page'>
+          <div className='page__container'>
+            <Header
+              loggedIn={loggedIn}
+              email={email}
+              onSignOut={onSignOut}
+            />
+            <Switch>
+              <ProtectedRoute exact path="/"
+                loggedIn={loggedIn}
+                component={Main}
+                cards={cards}
+                onEditAvatar={handleEditAvatarClick}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete} />
+              <Route path="/sign-in">
+                <div className="loginContainer">
+                  <Login onLogin={onLogin} tokenCheck={tokenCheck} />
+                </div>
+              </Route>
+              <Route path="/sign-up">
+                <div className="registerContainer">
+                  <Register onRegister={onRegister} />
+                </div>
+              </Route>
+              <Route>
+                {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+              </Route>
+            </Switch>
+            <Footer />
 
-          <Footer />
-
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser}
-          />
+            <EditProfilePopup
+              isOpen={isEditProfilePopupOpen}
+              onClose={closeAllPopups}
+              onUpdateUser={handleUpdateUser}
+            />
 
 
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar}
-          />
+            <EditAvatarPopup
+              isOpen={isEditAvatarPopupOpen}
+              onClose={closeAllPopups}
+              onUpdateAvatar={handleUpdateAvatar}
+            />
 
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit}
-          />
+            <AddPlacePopup
+              isOpen={isAddPlacePopupOpen}
+              onClose={closeAllPopups}
+              onAddPlace={handleAddPlaceSubmit}
+            />
 
-          <PopupWithForm
-            name='delete-submit'
-            title='Вы уверены?'
-            submitName='Да'
-            isOpen={isSubmitPopupOpen}
-            onClose={closeAllPopups}>
-          </PopupWithForm>
+            <PopupWithForm
+              name='delete-submit'
+              title='Вы уверены?'
+              submitName='Да'
+              isOpen={isSubmitPopupOpen}
+              onClose={closeAllPopups}>
+            </PopupWithForm>
 
-          <ImagePopup
-            name='img'
-            isOpen={isImageCardPopupOpen}
-            onClose={closeAllPopups}
-            card={selectedCard}>
-          </ImagePopup>
+            <ImagePopup
+              name='img'
+              isOpen={isImageCardPopupOpen}
+              onClose={closeAllPopups}
+              card={selectedCard}>
+            </ImagePopup>
+          </div>
         </div>
-      </div>
-    </CurrentUserContext.Provider>
+      </CurrentUserContext.Provider>
+    </>
   );
 }
 

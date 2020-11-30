@@ -1,0 +1,11 @@
+@import url('./__button/navbar__button.css');
+@import url('./__email/navbar__email.css');
+@import url('./__item/navbar__item.css');
+@import url('./__link/navbar__link.css');
+@import url('./__nav/navbar__nav.css');
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Inter', Arial, sans-serif;
+  }
