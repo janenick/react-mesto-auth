@@ -11,6 +11,7 @@ import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import InfoTooltip from './InfoTooltip';
 import { CurrentUserContext } from '../contexts/currentUserContext';
 import api from '../utils/api.js';
 import * as auth from '../utils/auth.js';
@@ -24,6 +25,7 @@ function App() {
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isImageCardPopupOpen, setIsImageCardPopupOpen] = React.useState(false);
   const [isSubmitPopupOpen, setIsSubmitPopupOpen] = React.useState(false);
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
 
   const [cards, setCards] = React.useState([]);
@@ -31,6 +33,8 @@ function App() {
   // --> авторизация
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState('');
+  const [isRegisterSuccess, setIsRegisterSuccess] = React.useState(false);
+  const [token, setToken] = React.useState('');
 
   const history = useHistory();
   // <-- авторизация
@@ -120,6 +124,10 @@ function App() {
       });
   }
 
+  function onOpenPopupInfoTooltip(successValue) {
+    setIsRegisterSuccess(successValue);
+    setIsInfoTooltipPopupOpen(true);
+  }
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
@@ -127,40 +135,63 @@ function App() {
     setAddPlacePopupOpen(false);
     setIsImageCardPopupOpen(false);
     setIsSubmitPopupOpen(false);
+    setIsInfoTooltipPopupOpen(false);
 
     setSelectedCard({});
   }
 
   // --> авторизация
   const handleResponce = (res) => {
-    if (res.jwt) {
-      localStorage.setItem('jwt', res.jwt);
+    console.log('handleResponce = (res): ', res);
+    if (res.token) {
+      localStorage.setItem('jwt', res.token);
       setEmail(res.data.email);
       setLoggedIn(true);
     }
   }
 
-  const onLogin = (username, password) => {
+  const onLogin = (email, password) => {
     // авторизация
     console.log('onLogin from App component: ', email, password);
-    auth.authorize(username, password)
-      .then(handleResponce)
+    auth.authorize(email, password)
+      // .then(handleResponce)
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem('token', res.token);
+         /* setEmail(res.data.email);
+          setLoggedIn(true);
+          */
+          tokenCheck();
+        }
+      })
       .catch(err => console.log("Ошибка: ", err));
   }
 
   const onRegister = (password, email) => {
-    console.log('handleRegister from App component: ', password, email);
+    console.log('onRegister from App component: ', password, email);
     auth.register(password, email)
-      .then(handleResponce)
-      .catch(err => console.log(err));
+      .then((res) => {
+        if (res.data.email) {
+          history.push('./sign-in');
+          onOpenPopupInfoTooltip(true);
+        }
+        /* handleResponce(res);
+        onOpenPopupInfoTooltip(true);
+        */
+      })
+      .catch((err) => {
+        onOpenPopupInfoTooltip(false);
+        console.log(err)
+      });
   }
 
 
   const tokenCheck = () => {
 
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      auth.getContent(jwt).then((res) => {
+    const token = localStorage.getItem('token');
+    console.log('tokenCheck, token: ', token);
+    if (token) {
+      auth.getContent(token).then((res) => {
         console.log('tokenCheck.res: ', res);
         if (res.data.email) {
           setEmail(res.data.email);
@@ -171,9 +202,9 @@ function App() {
   }
 
   const onSignOut = () => {
-    // авторизация
-    console.log('onSignOut from App component');
-    localStorage.removeItem('jwt');
+    // выход из профиля
+    localStorage.removeItem('token');
+    setToken('');
     setEmail('');
     setLoggedIn(false);
   }
@@ -279,6 +310,14 @@ function App() {
               onClose={closeAllPopups}
               card={selectedCard}>
             </ImagePopup>
+
+            <InfoTooltip
+              name='infoToolLip'
+              isOpen={isInfoTooltipPopupOpen}
+              onClose={closeAllPopups}
+              status={isRegisterSuccess}
+            >
+            </InfoTooltip>
           </div>
         </div>
       </CurrentUserContext.Provider>

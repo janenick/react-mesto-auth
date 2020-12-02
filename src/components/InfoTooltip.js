@@ -1,0 +1,22 @@
+import React from 'react';
+import singFail from '../images/popup/sing-fail.svg';
+import singSuccess from '../images/popup/sing-success.svg';
+
+
+function InfoTooltip({ name, isOpen, onClose, status }) {
+  const singImg = status ? singSuccess : singFail;
+  const singText = status ? 'Вы успешно зарегистрировались!' :  'Что-то пошло не так! Попробуйте ещё раз.';
+
+  return (
+    <div className={`popup popup_type_${name} ${isOpen && 'popup_opened'}`}>
+      <div className='popup__container'>
+        <button type='button' className='popup__btn-close' onClick={onClose}></button>
+
+        <img className='popup__icon' src={singImg} alt={`Иконка с ответом сервера ${singText}`} />
+        <p className='popup__text-info-tooltip'>{singText}</p>
+      </div>
+    </div>
+  );
+}
+
+export default InfoTooltip;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {
   const [data, setData] = useState({
@@ -17,15 +18,15 @@ const Login = ({ onLogin }) => {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    let { username, password } = data;
-    console.log('handleSubmit from Login: ', { username, password });
-    onLogin(username, password);
+    let { email, password } = data;
+    console.log('handleSubmit from Login: ', { email, password });
+    onLogin(email, password);
 
 
   }
 
   return (
-    <section className="login section">
+    <section className='login section'>
       <div className='login__container'>
         <form className='login__form' onSubmit={handleSubmit}>
           <h2 className='login__title'>Войти</h2>
@@ -37,6 +38,7 @@ const Login = ({ onLogin }) => {
           </label>
           <button type='submit' className='login__btn-sbm'>Войти</button>
         </form>
+        <Link to='./sign-up' className='login__link'>Ещё не зарегистрированы? Регистрация</Link>
       </div>
     </section>
   )
