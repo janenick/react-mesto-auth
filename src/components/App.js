@@ -34,7 +34,7 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [isRegisterSuccess, setIsRegisterSuccess] = React.useState(false);
-  const [token, setToken] = React.useState('');
+  const [tooltipMessage, setTooltipMessage] = React.useState('');
 
   const history = useHistory();
   // <-- авторизация
@@ -124,8 +124,9 @@ function App() {
       });
   }
 
-  function onOpenPopupInfoTooltip(successValue) {
-    setIsRegisterSuccess(successValue);
+  function onOpenPopupInfoTooltip(status, message) {
+    setIsRegisterSuccess(status);
+    setTooltipMessage(message);
     setIsInfoTooltipPopupOpen(true);
   }
 
@@ -141,47 +142,50 @@ function App() {
   }
 
   // --> авторизация
-  const handleResponce = (res) => {
-    console.log('handleResponce = (res): ', res);
-    if (res.token) {
-      localStorage.setItem('jwt', res.token);
-      setEmail(res.data.email);
-      setLoggedIn(true);
-    }
-  }
 
   const onLogin = (email, password) => {
     // авторизация
-    console.log('onLogin from App component: ', email, password);
     auth.authorize(email, password)
-      // .then(handleResponce)
       .then((res) => {
-        if (res.token) {
-          localStorage.setItem('token', res.token);
-         /* setEmail(res.data.email);
+        if (res.data.token) {
+          localStorage.setItem('token', res.data.token);
+          setEmail(email);
           setLoggedIn(true);
-          */
-          tokenCheck();
+        } else {
+          return new Promise().reject();
         }
       })
-      .catch(err => console.log("Ошибка: ", err));
+      .catch((err) => {
+        if (err.data) {
+          onOpenPopupInfoTooltip(false, err.data.message);
+        } else {
+          onOpenPopupInfoTooltip(false, 'Что-то пошло не так');
+        }
+      });
   }
 
   const onRegister = (password, email) => {
-    console.log('onRegister from App component: ', password, email);
     auth.register(password, email)
       .then((res) => {
-        if (res.data.email) {
+        if (res.data.data.email) {
           history.push('./sign-in');
-          onOpenPopupInfoTooltip(true);
+          onOpenPopupInfoTooltip(true, 'Вы успешно зарегистрировались!');
+
+        } else {
+          return new Promise().reject();
         }
-        /* handleResponce(res);
-        onOpenPopupInfoTooltip(true);
-        */
       })
       .catch((err) => {
-        onOpenPopupInfoTooltip(false);
-        console.log(err)
+        console.log(err);
+        if (err.data) {
+          if (err.data.message) {
+            onOpenPopupInfoTooltip(false, err.data.message);
+          } else {
+            onOpenPopupInfoTooltip(false, err.data.error);
+          }
+        } else {
+          onOpenPopupInfoTooltip(false, 'Что-то пошло не так');
+        }
       });
   }
 
@@ -189,22 +193,25 @@ function App() {
   const tokenCheck = () => {
 
     const token = localStorage.getItem('token');
-    console.log('tokenCheck, token: ', token);
+
     if (token) {
       auth.getContent(token).then((res) => {
-        console.log('tokenCheck.res: ', res);
-        if (res.data.email) {
-          setEmail(res.data.email);
+        if (res.data.data.email) {
+          setEmail(res.data.data.email);
           setLoggedIn(true);
+        } else {
+          return new Promise().reject();
         }
-      }).catch(err => console.log(err));
+
+      })
+        .catch(_ => onOpenPopupInfoTooltip(false, 'Что-то пошло не так! Проблемы с токеном.'));
     }
   }
+
 
   const onSignOut = () => {
     // выход из профиля
     localStorage.removeItem('token');
-    setToken('');
     setEmail('');
     setLoggedIn(false);
   }
@@ -237,6 +244,7 @@ function App() {
     if (loggedIn) {
       history.push('/');
     }
+    // eslint-disable-next-line
   }, [loggedIn]);
   // <-- авторизация
 
@@ -263,7 +271,7 @@ function App() {
                 onCardDelete={handleCardDelete} />
               <Route path="/sign-in">
                 <div className="loginContainer">
-                  <Login onLogin={onLogin} tokenCheck={tokenCheck} />
+                  <Login onLogin={onLogin} />
                 </div>
               </Route>
               <Route path="/sign-up">
@@ -316,6 +324,7 @@ function App() {
               isOpen={isInfoTooltipPopupOpen}
               onClose={closeAllPopups}
               status={isRegisterSuccess}
+              message={tooltipMessage}
             >
             </InfoTooltip>
           </div>

@@ -19,7 +19,6 @@ const Login = ({ onLogin }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     let { email, password } = data;
-    console.log('handleSubmit from Login: ', { email, password });
     onLogin(email, password);
 
 

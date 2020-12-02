@@ -1,9 +1,18 @@
 export const BASE_URL = 'https://auth.nomoreparties.co';
 
-const checkResponce = (response) => response.ok ? response.json() : Promise.reject(`Ошибка from auth: ${response.status} ${response.error}`);
+// const checkResponse = (response) => response.ok ? response.json() : Promise.reject(`Ошибка from auth: ${response}`);
+
+
+const checkResponce = (res) => {
+  return new Promise((resolve, reject) => {
+    const func = res.status < 400 ? resolve : reject;
+    res.json().then((data) => {
+      func({ 'status': res.status, 'data': data })
+    })
+  })
+}
 
 export const register = (password, email) => {
-  console.log('register = (password, email): ', password, email);
   return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {
@@ -14,18 +23,16 @@ export const register = (password, email) => {
   })
     .then(checkResponce)
 };
-export const authorize = (identifier, password) => {
-  console.log('authorize = (identifier, password): ', identifier, password);
+
+
+export const authorize = (email, password) => {
   return fetch(`${BASE_URL}/signin`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      'password': password,
-      'email': identifier
-    })
+    body: JSON.stringify({ password, email })
   })
     .then(checkResponce)
 };

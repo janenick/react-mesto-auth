@@ -20,7 +20,6 @@ const Register = ({ onRegister }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     let { email, password } = data;
-    console.log('handleSubmit from Register: ', { email, password });
     onRegister(password, email);
   }
 
