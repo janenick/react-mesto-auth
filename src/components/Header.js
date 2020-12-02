@@ -15,7 +15,7 @@ function Header(props) {
         <ul className='header__links'>
           {props.loggedIn
             ? (<>
-              <li className='header__link-item'><p className='navbar__email'>{props.email}</p></li>
+              <li className='header__link-item'><p className='header__email'>{props.email}</p></li>
               <li className='header__link-item'><button onClick={props.onSignOut} className='header__btn'>Выйти</button></li>
             </>)
             :

@@ -50,11 +50,11 @@ function EditProfilePopup(props) {
     >
 
       <label className='popup__form-field'>
-        <input id='name-input' name='popup__input-name' value={name || ''} onChange={handleNameChange} type='text' placeholder='Имя' className='popup__input popup__input_type_name' required minLength='2' maxLength='40' />
+        <input id='name-input' name='popup__input-name' value={name || ''} onChange={handleNameChange} type='text' placeholder='Имя' className='popup__input popup__input_type_popup popup__input_type_name' required minLength='2' maxLength='40' />
         <span id='name-input-error' className='popup__input-error'></span>
       </label>
       <label className='popup__form-field'>
-        <input id='status-input' name='popup__input-status' value={description || ''} onChange={handleDescriptionChange} type='text' placeholder='Вид деятельности' className='popup__input popup__input_type_status' required minLength='2' maxLength='200' />
+        <input id='status-input' name='popup__input-status' value={description || ''} onChange={handleDescriptionChange} type='text' placeholder='Вид деятельности' className='popup__input popup__input_type_popup popup__input_type_status' required minLength='2' maxLength='200' />
         <span id='status-input-error' className='popup__input-error'></span>
       </label>
     </PopupWithForm>

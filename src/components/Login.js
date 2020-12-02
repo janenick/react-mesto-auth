@@ -27,18 +27,18 @@ const Login = ({ onLogin }) => {
 
   return (
     <section className='login section'>
-      <div className='login__container'>
-        <form className='login__form' onSubmit={handleSubmit}>
-          <h2 className='login__title'>Войти</h2>
-          <label className='login__form-field'>
-            <input id='email' required name='email' type='email' value={data.email} onChange={handleChange} placeholder='Email' className='login__input' />
+      <div className='popup__container'>
+        <form className='popup__form' onSubmit={handleSubmit}>
+          <h2 className='popup__title popup__title_type_elem'>Войти</h2>
+          <label className='popup__form-field'>
+            <input id='email' required name='email' type='email' value={data.email} onChange={handleChange} placeholder='Email' className='popup__input popup__input_type_elem' />
           </label>
-          <label className='login__form-field'>
-            <input id='password' required name='password' type='password' value={data.password} onChange={handleChange} placeholder='Пароль' className='login__input' />
+          <label className='popup__form-field'>
+            <input id='password' required name='password' type='password' value={data.password} onChange={handleChange} placeholder='Пароль' className='popup__input popup__input_type_elem' />
           </label>
-          <button type='submit' className='login__btn-sbm'>Войти</button>
+          <button type='submit' className='popup__btn-save popup__btn-save_type_elem'>Войти</button>
         </form>
-        <Link to='./sign-up' className='login__link'>Ещё не зарегистрированы? Регистрация</Link>
+        <Link to='./sign-up' className='popup__link'>Ещё не зарегистрированы? Регистрация</Link>
       </div>
     </section>
   )

@@ -26,18 +26,18 @@ const Register = ({ onRegister }) => {
 
   return (
     <section className='login section'>
-      <div className='login__container'>
-        <form className='login__form' onSubmit={handleSubmit}>
-          <h2 className='login__title'>Регистрация</h2>
-          <label className='login__form-field'>
-            <input id='email' required name='email' type='email' value={data.email} onChange={handleChange} placeholder='Email' className='login__input' />
+      <div className='popup__container'>
+        <form className='popup__form' onSubmit={handleSubmit}>
+          <h2 className='popup__title popup__title_type_elem'>Регистрация</h2>
+          <label className='popup__form-field'>
+            <input id='email' required name='email' type='email' value={data.email} onChange={handleChange} placeholder='Email' className='popup__input popup__input_type_elem' />
           </label>
           <label className='login__form-field'>
-            <input id='password' required name='password' type='password' value={data.password} onChange={handleChange} placeholder='Пароль' className='login__input' />
+            <input id='password' required name='password' type='password' value={data.password} onChange={handleChange} placeholder='Пароль' className='popup__input popup__input_type_elem' />
           </label>
-          <button type='submit' className='login__btn-sbm'>Зарегистрироваться</button>
+          <button type='submit' className='popup__btn-save popup__btn-save_type_elem'>Зарегистрироваться</button>
         </form>
-        <Link to='./sign-шт' className='login__link'>Уже зарегистрированы? Войти</Link>
+        <Link to='./sign-шт' className='popup__link'>Уже зарегистрированы? Войти</Link>
       </div>
     </section>
   )

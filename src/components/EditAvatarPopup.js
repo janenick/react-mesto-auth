@@ -23,7 +23,7 @@ function EditAvatarPopup(props) {
       onSubmit={handleSubmit}
     >
       <label className='popup__form-field'>
-        <input id='avatar-input' name='popup__input-avatar' ref={avatarRef} type='url' placeholder='Ссылка на картинку' className='popup__input popup__input_type_avatar' required />
+        <input id='avatar-input' name='popup__input-avatar' ref={avatarRef} type='url' placeholder='Ссылка на картинку' className='popup__input popup__input_type_popup popup__input_type_avatar' required />
         <span id='avatar-input-error' className='popup__input-error'></span>
       </label>
     </PopupWithForm>

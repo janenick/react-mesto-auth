@@ -8,8 +8,8 @@ function InfoTooltip({ name, isOpen, onClose, status }) {
   const singText = status ? 'Вы успешно зарегистрировались!' :  'Что-то пошло не так! Попробуйте ещё раз.';
 
   return (
-    <div className={`popup popup_type_${name} ${isOpen && 'popup_opened'}`}>
-      <div className='popup__container'>
+    <div className={`popup popup_name_${name} ${isOpen && 'popup_opened'}`}>
+      <div className='popup__container popup__container_type_popup'>
         <button type='button' className='popup__btn-close' onClick={onClose}></button>
 
         <img className='popup__icon' src={singImg} alt={`Иконка с ответом сервера ${singText}`} />
