@@ -37,7 +37,7 @@ const Register = ({ onRegister }) => {
           </label>
           <button type='submit' className='popup__btn-save popup__btn-save_type_elem'>Зарегистрироваться</button>
         </form>
-        <Link to='./sign-шт' className='popup__link'>Уже зарегистрированы? Войти</Link>
+        <Link to='./sign-in' className='popup__link'>Уже зарегистрированы? Войти</Link>
       </div>
     </section>
   )
