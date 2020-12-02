@@ -25,14 +25,14 @@ const Register = ({ onRegister }) => {
   }
 
   return (
-    <section className='login section'>
+    <section className='register section'>
       <div className='popup__container'>
         <form className='popup__form' onSubmit={handleSubmit}>
           <h2 className='popup__title popup__title_type_elem'>Регистрация</h2>
           <label className='popup__form-field'>
             <input id='email' required name='email' type='email' value={data.email} onChange={handleChange} placeholder='Email' className='popup__input popup__input_type_elem' />
           </label>
-          <label className='login__form-field'>
+          <label className='popup__form-field'>
             <input id='password' required name='password' type='password' value={data.password} onChange={handleChange} placeholder='Пароль' className='popup__input popup__input_type_elem' />
           </label>
           <button type='submit' className='popup__btn-save popup__btn-save_type_elem'>Зарегистрироваться</button>
