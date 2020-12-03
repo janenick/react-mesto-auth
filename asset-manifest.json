@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "./static/css/main.880cec79.chunk.css",
+    "main.js": "./static/js/main.207382b2.chunk.js",
+    "main.js.map": "./static/js/main.207382b2.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.cb0fdd19.js",
+    "runtime-main.js.map": "./static/js/runtime-main.cb0fdd19.js.map",
+    "static/js/2.7381b563.chunk.js": "./static/js/2.7381b563.chunk.js",
+    "static/js/2.7381b563.chunk.js.map": "./static/js/2.7381b563.chunk.js.map",
+    "index.html": "./index.html",
+    "precache-manifest.5cb1f795117c90e850767f6006a115c5.js": "./precache-manifest.5cb1f795117c90e850767f6006a115c5.js",
+    "service-worker.js": "./service-worker.js",
+    "static/css/main.880cec79.chunk.css.map": "./static/css/main.880cec79.chunk.css.map",
+    "static/js/2.7381b563.chunk.js.LICENSE.txt": "./static/js/2.7381b563.chunk.js.LICENSE.txt",
+    "static/media/index.css": "./static/media/trash.9c3b03ae.svg",
+    "static/media/header-logo.svg": "./static/media/header-logo.855a8c98.svg",
+    "static/media/sing-fail.svg": "./static/media/sing-fail.4072126c.svg",
+    "static/media/sing-success.svg": "./static/media/sing-success.e38b395c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.cb0fdd19.js",
+    "static/js/2.7381b563.chunk.js",
+    "static/css/main.880cec79.chunk.css",
+    "static/js/main.207382b2.chunk.js"
+  ]
+}
